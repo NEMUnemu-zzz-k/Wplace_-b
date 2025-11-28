@@ -1,0 +1,9 @@
+[
+  {
+    "img": "img/image.png",
+    "name": "表示テストです。実際に使うときはファイル等置き換えてください。",
+    "easeReturn": 3,
+    "easeMake": 3,
+    "pixels": 0
+  }
+]

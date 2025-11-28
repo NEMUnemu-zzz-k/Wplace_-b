@@ -1,60 +1,59 @@
-let LoadData = [null]; 
-let LoadSpanData = ["日章旗への戻しやすさ","作りやすさ","必要px:"]
-function HTMLload(){
-    for (let k = 0; k < LoadData.length; k++) {
-        //article作成
-        let newarticle = document.createElement("article");
-        newarticle.className = ("article");
-        document.getElementById("main").appendChild(newarticle,null);
-        //h1作成
-        let newh1 = document.createElement("h1");
-        newh1.appendChild(document.createTextNode(LoadData[k][1]));
-        document.getElementsByClassName("article")[k].appendChild(newh1,null);
-        //img作成
-        let newimg = document.createElement("img");
-        newimg.src = LoadData[k][0];
-        document.getElementsByClassName("article")[k].appendChild(newimg,null);
-        for (let l = 0; l < 2; l++) {
-            //div作成
-            let newdiv = document.createElement("div");
-            newdiv.id = (l + "div" + k);
-            document.getElementsByClassName("article")[k].appendChild(newdiv,null);
-            //span1作成
-            let newspan1 = document.createElement("span");
-            newspan1.appendChild(document.createTextNode(LoadSpanData[l]));
-            document.getElementById(l + "div" + k).appendChild(newspan1,null);
-            //span2作成
-            let newspan2 = document.createElement("span");
-            newspan2.className = ("spanNum");
-            newspan2.appendChild(document.createTextNode( "☆".repeat(5 - Math.min(LoadData[k][l + 2], 5)) + "★".repeat(Math.min(LoadData[k][l + 2], 5))));
-            document.getElementById(l + "div" + k).appendChild(newspan2,null);
-        }
-        //div作成
-        let newdiv = document.createElement("div");
-        newdiv.id = ("div" + k);
-        document.getElementsByClassName("article")[k].appendChild(newdiv,null);
-        //span1作成
-        let newspan1 = document.createElement("span");
-        newspan1.appendChild(document.createTextNode(LoadSpanData[2]));
-        document.getElementById("div" + k).appendChild(newspan1,null);
-        //span2作成
-        let newspan2 = document.createElement("span");
-        newspan2.className = ("spanNum");
-        newspan2.appendChild(document.createTextNode(LoadData[k][4]));
-        document.getElementById("div" + k).appendChild(newspan2,null);
-        //DLボタン作成
-        let newButton = document.createElement("a");
-        newButton.href = LoadData[k][0];
-        newButton.type = "image/png";
-        newButton.download = LoadData[k][1]
-        newButton.appendChild(document.createTextNode("ダウンロード"));
-        document.getElementsByClassName("article")[k].appendChild(newButton,null);
-        //br作成
-        document.getElementsByClassName("article")[k].appendChild(document.createElement("br"),null);
-    };
+fetch("data.json")
+  .then(res => res.json())
+  .then(LoadData => HTMLload(LoadData));
+
+function HTMLload(LoadData) {
+  for (let k = 0; k < LoadData.length; k++) {
+    let item = LoadData[k];
+
+    let article = document.createElement("article");
+    article.className = "article";
+
+    // タイトル
+    let h1 = document.createElement("h1");
+    h1.textContent = item.name;
+    article.appendChild(h1);
+
+    // 画像
+    let img = document.createElement("img");
+    img.src = item.img;
+    article.appendChild(img);
+
+    // 評価2項目
+    const labels = ["戻しやすさ", "作りやすさ"];
+    const values = [item.easeReturn, item.easeMake];
+
+    for (let i = 0; i < 2; i++) {
+      let div = document.createElement("div");
+      let s1 = document.createElement("span");
+      s1.textContent = labels[i];
+      let s2 = document.createElement("span");
+      s2.className = "spanNum";
+      s2.textContent =
+        "☆".repeat(5 - values[i]) + "★".repeat(values[i]);
+      div.appendChild(s1);
+      div.appendChild(s2);
+      article.appendChild(div);
+    }
+
+    // 必要px
+    let div = document.createElement("div");
+    let s1 = document.createElement("span");
+    s1.textContent = "必要px:";
+    let s2 = document.createElement("span");
+    s2.className = "spanNum";
+    s2.textContent = item.pixels;
+    div.appendChild(s1);
+    div.appendChild(s2);
+    article.appendChild(div);
+
+    // ダウンロード
+    let a = document.createElement("a");
+    a.href = item.img;
+    a.download = item.name;
+    a.textContent = "ダウンロード";
+    article.appendChild(a);
+
+    document.getElementById("main").appendChild(article);
+  }
 }
-LoadData = [
-["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWkAAAEFCAYAAAAhTRZvAAAAw3pUWHRSYXcgcHJvZmlsZSB0eXBlIGV4aWYAAHjabVBbDsMgDPvnFDsCeUDDcdjaSbvBjj/TBKlss4QdMIQk6Xi/nuk2wKRJy2a11ZoBbdq4I7Ds6CdT1pNP1BYRrecplwgZKlBxw6orzfN4MJU6onJJZI8w7qvR1JXtKxG7yKhoxHskapFI2A2KBL3PVmy7tnA/8grzlQaprWX/7DdMby/4R5gPIclgkeoFyFglSYdBYBbFRYJ2XGpgldkSBvJvThPpA/RvWSPPiFeWAAABhGlDQ1BJQ0MgcHJvZmlsZQAAeJx9kT1Iw0AYht+mSkUrInYo4pChOtlFRRxLFYtgobQVWnUwufQPmjQkKS6OgmvBwZ/FqoOLs64OroIg+APiLjgpukiJ3yWFFjHecdzDe9/7cvcdIDSrTDV7YoCqWUY6ERdz+VUx8IoBhCHQHJaYqSczi1l4jq97+Ph+F+VZ3nV/jkGlYDLAJxLHmG5YxBvEs5uWznmfOMTKkkJ8Tjxp0AWJH7kuu/zGueSwwDNDRjY9TxwiFktdLHcxKxsq8QxxRFE1yhdyLiuctzir1Tpr35O/MFjQVjJcpzWGBJaQRAoiZNRRQRUWorRrpJhI03ncwz/q+FPkkslVASPHAmpQITl+8D/43VuzOD3lJgXjQO+LbX+MA4FdoNWw7e9j226dAP5n4Err+GtNYO6T9EZHixwBQ9vAxXVHk/eAyx0g/KRLhuRIflpCsQi8n9E35YGRW6B/ze1b+xynD0CWerV8AxwcAhMlyl73eHdfd9/+rWn37wdMj3KXXoZybQAADXZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+Cjx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDQuNC4wLUV4aXYyIj4KIDxyZGY6UkRGIHhtbG5zOnJkZj0iaHR0cDovL3d3dy53My5vcmcvMTk5OS8wMi8yMi1yZGYtc3ludGF4LW5zIyI+CiAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgIHhtbG5zOnhtcE1NPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvbW0vIgogICAgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIKICAgIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIKICAgIHhtbG5zOkdJTVA9Imh0dHA6Ly93d3cuZ2ltcC5vcmcveG1wLyIKICAgIHhtbG5zOnRpZmY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vdGlmZi8xLjAvIgogICAgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIgogICB4bXBNTTpEb2N1bWVudElEPSJnaW1wOmRvY2lkOmdpbXA6NTYyNDdlODMtNTNjNC00ZDc0LWFlZWMtMTJiMDY0ZmMxNzhiIgogICB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOmIwOTU5MjA2LWZlMmItNDM1My1hZTI0LWZiNDIwNDliMjRjZSIKICAgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOjNjYTJjMjRmLTAxZjMtNDA1NC05YTA4LTc1NGUxOTUwMThmYiIKICAgZGM6Rm9ybWF0PSJpbWFnZS9wbmciCiAgIEdJTVA6QVBJPSIyLjAiCiAgIEdJTVA6UGxhdGZvcm09IldpbmRvd3MiCiAgIEdJTVA6VGltZVN0YW1wPSIxNzYzOTU1NTgzMDY3OTg1IgogICBHSU1QOlZlcnNpb249IjIuMTAuMzYiCiAgIHRpZmY6T3JpZW50YXRpb249IjEiCiAgIHhtcDpDcmVhdG9yVG9vbD0iR0lNUCAyLjEwIgogICB4bXA6TWV0YWRhdGFEYXRlPSIyMDI1OjExOjI0VDEyOjM5OjQzKzA5OjAwIgogICB4bXA6TW9kaWZ5RGF0ZT0iMjAyNToxMToyNFQxMjozOTo0MyswOTowMCI+CiAgIDx4bXBNTTpIaXN0b3J5PgogICAgPHJkZjpTZXE+CiAgICAgPHJkZjpsaQogICAgICBzdEV2dDphY3Rpb249InNhdmVkIgogICAgICBzdEV2dDpjaGFuZ2VkPSIvIgogICAgICBzdEV2dDppbnN0YW5jZUlEPSJ4bXAuaWlkOjU0YjZjMTY5LTc2OTQtNGVmMy04OTJiLTE3MGE3ZTVlYmRmZSIKICAgICAgc3RFdnQ6c29mdHdhcmVBZ2VudD0iR2ltcCAyLjEwIChXaW5kb3dzKSIKICAgICAgc3RFdnQ6d2hlbj0iMjAyNS0xMS0yNFQxMjozOTo0MyIvPgogICAgPC9yZGY6U2VxPgogICA8L3htcE1NOkhpc3Rvcnk+CiAgPC9yZGY6RGVzY3JpcHRpb24+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICAgICAgICAgCjw/eHBhY2tldCBlbmQ9InciPz51G/4FAAAABmJLR0QAAAAAAAD5Q7t/AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH6QsYAycra91b9wAABhJJREFUeNrt3UFS4zoUQFGpq1cAU5jB/hcEM5jCFtQjUym3IcHWkyX7nCoG3b++kyjV18pLcHIppSQAuvTHEgCINAAiDSDSAIg0ACININIAiDSASAMg0gCINIBIAyDSACINgEgDINIAIg2ASAOINAAiDYBIA4g0ACININIAiDQAIg0g0gCINIBIAyDSAIg0gEgDINIAIg2ASAMg0gAiDYBIA4g0ACINgEgDiDQAIg0g0gCINAAiDSDSAIg0gEgDINIAiDSASAMg0gAiDYBIAyDSACINgEgDiDQAIg2ASAOINAAiDSDSAIg0ACININIAiDSASAMg0gCINMAo/loCRvP5+Lz49/fvrymllD4enr79f+/eXiwgIg3RQa55POFGpGGnKK+5TdFGpGHnMN96fwQbkUaYB7mfgs0efLqDpnLOKefsvoOdNHbOsY/FzhqRRpzFmpMz7iAsYEcO9FlORIg0ouWkBCKNQHv8jMlMGnEKWguzauykEWjrgkiDEFkfRBoBsk7wHzNpug3PdOnRlH6+/Ggvx722XmbUiDSH2hleBvT+/bVaUKOOK9REMO6gWqAvd6jse4JDpBEYrpykvjtpWUd+w7iDbgN9pJn00noafSDSNA107ZBGBXSvmbRQs4ZxB9V20GefSX88PKX799evn1vib/SBnTQ0DnUPu3REGrvoJrvSpfht1cNMer7Oxh6INOGBrh28FjPpntZbqFliJg2BrwZApOliF411R6QRCuuPSAMg0tjF4XngBrmUUiwDKaWUc7YInfDPEjtpBNrzwQB8TpqUUruPi02/SBJxe5HHbnF8sJNmkRmo5wWRBkCksVvz/CDSAIg0AD7d4aX0JpGX/Rz5UqU1b8MV8kQaVocoMnKjfn3W/Jgu/s8Wxh0AIg3AGsYdJ1VjHh35FVeRx57fTsQxa993c2mRhs2Rqzl7bTXXNZOmd8YdACINwBrGHWx+aT8xk2573xFpDqrm9SAiAzRy3CLuuzcPz8m4A0CkARBpAJEGQKQBSLn47vjzPem+iXpY/rnaSQPQEZ+TPqE9P388/ZJH1HU4Ih9f9PHBThpApAEQaQCRBkCkARBpAJGmey536XljHD4nzRBcRB87aVgZz+knIsjTnz8enr5+tt7W0vHBTppDBtq3YoNIw2FOahMnM25l3HFSPb8JNQ/YtT/XPn5ElKfbWTuy8aahSMOq2F3OpGvF7trM2EyaMzHuoNqu1EwaRBqGPIHNd+xOZog0V929vaTPx+fu4zaf4Y40k56OveVVhnm0SMOmELXYHdp5ItIgntAdn+44OS+l25zA5p+E8fxgJw1edWAnjd00ECmXUoplIOdsETrjnyZ20ggCdM5Mmi8tZqbTm2YRtxV57BbHv2QEhZ00wtBQxHW3EWnYJUCXx2l5MaSaj2P+GC6vgOdkiUgTvpue/6ZhrW9NaX1yWRtSr2YQaYTCuoM3DunP0m/qLf03jwGR5tS7up+ukDe/jnTNAM2vGBd1zerIkP50Bbylx2AXzXeMO1j18vtoM+k9H4dAI9IAgzLu4Oour/UXA/w0ajjaTNouGpEmJNSRM+m9TgaRj2PpeAKNSNNkR32UTyu0fBwCza3MpBEW64hIIzBYP0QaobFuiDQIjvVCpBEe6wQijQBZH0QaIbIusIrPSVM1SK1/O1GcsZMGgfL4sZPGrlqcwU4a4fI4sZOGM+yqxRmR5nhBy1mc4ReMO2iqlJJKKe472Ekzym6051GIXTMijWB3FmxhRqThxkC2iLYoI9JQMaBbwi3IjCYX74QAdMunOwBEGgCRBhBpAEQaAJEGEGkARBpApAEQaQBEGkCkARBpAJEGQKQBEGkAkQZApAFEGgCRBkCkAUQaAJEGEGkARBoAkQYQaQBEGkCkARBpAEQaQKQBEGkAkQZApAEQaQCRBkCkAUQaAJEGQKQBRBoAkQYQaQBEGgCRBhBpAEQaQKQBEGkARBpApAEQaQCRBkCkARBpAJEGQKQBRBoAkQZApAFEGgCRBhBpAEQaAJEGEGkARBpApAEQaQBEGkCkARBpAJEGQKQBEGkAkQZApAFEGoCd/AN89I/e5vHilAAAAABJRU5ErkJggg==","日章旗",5,5,15368],
-["data:image/png;base64,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","任天堂ロゴ",2,2,89882]
-];
-HTMLload();
