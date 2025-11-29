@@ -1,5 +1,5 @@
 body {
-  background-color: #fabea7;
+  background-color: #dddddd;
 }
 main {
   display: flex;
@@ -9,19 +9,18 @@ main {
   margin-bottom: 2.7em;
 }
 article {
-    background-color: #dddddd;
-    border-width: 10px 10px 10px 10px;
+    border-width: 9px 9px 9px 9px;
     border-style: outset;
 }
 h1 {
     text-align: center;
-    border-width: 10px 10px 10px 10px;
+    border-width: 9px 9px 9px 9px;
     border-style: outset;
-    background-color: #dddddd;
 }
 img {
   margin-left: 1em;
   margin-right: 1em;
+  border-style: solid;
 }
 span {
   margin-left: 1em;
@@ -39,7 +38,7 @@ footer {
   bottom: 0;
   left: 50%;
   transform: translate(-50%,0%);
-  border-width: 10px 10px 10px 10px;
+  border-width: 9px 9px 9px 9px;
   border-style: outset;
   background-color: #dddddd;
   width: calc(100% - 20px);
