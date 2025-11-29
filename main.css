@@ -2,18 +2,11 @@ body {
   background-color: #fabea7;
 }
 main {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
-  gap: 1em;
-  position: fixed;
+  display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  align-content: flex-start;
-}
-.mainh1 {
-    background-color: #dddddd;
-    border-width: 10px 10px 10px 10px;
-    border-style: outset;
+  justify-content: center;
+  margin-bottom: 3em;
 }
 article {
     background-color: #dddddd;
@@ -22,6 +15,9 @@ article {
 }
 h1 {
     text-align: center;
+    border-width: 10px 10px 10px 10px;
+    border-style: outset;
+    background-color: #dddddd;
 }
 img {
   margin-left: 1em;
@@ -43,4 +39,7 @@ footer {
   bottom: 0;
   left: 50%;
   transform: translate(-50%,0%);
+  border-width: 10px 10px 10px 10px;
+  border-style: outset;
+  background-color: #dddddd;
 }
